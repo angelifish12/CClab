@@ -110,6 +110,21 @@ CCLaboratories Biodiversity Atlas
 
     <!-- Include your sketch.js file here -->
     <script src="sketch.js" type="text/javascript"> </script>
+<audio id="bgm" src="happy.mp3" preload="auto"></audio>
+
+<button id="playBtn">▶ Play music</button>
+
+<script>
+  const bgm = document.getElementById('bgm');
+  document.getElementById('playBtn').addEventListener('click', async () => {
+    try {
+      await bgm.play();
+      bgm.loop = true;
+    } catch (e) {
+      console.log('Playback blocked:', e);
+    }
+  });
+</script>
 </body>
 
 </html>
