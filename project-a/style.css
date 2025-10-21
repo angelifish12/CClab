@@ -121,8 +121,8 @@ canvas {
 }
 #playBtn {
   position: absolute;
-  left: 40%;
-  top: 90%;
+  left: 60%;
+  top: 110%;
   transform: translate(-50%, -50%);
   z-index: 10px;               
   padding: 12px 18px;
