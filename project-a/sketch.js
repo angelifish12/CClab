@@ -16,9 +16,14 @@ let speed = 1;
 let blocking = false;
 let spaceMode = false;
 
+function mouseInCanvas() {
+  return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
+}
+
 function setup() {
   let canvas = createCanvas(800, 500);
   canvas.parent("p5-canvas-container");
+
   x = 0;
   y = 0;
   circleSize1 = 40;
@@ -30,7 +35,6 @@ function draw() {
   if (spaceMode == false) {
     background(random(12, 32), random(45, 65), random(85, 105));
   }
-
 
   noStroke();
   fill(255);
@@ -84,9 +88,30 @@ function draw() {
     fill(255, 245, 170, 100);
     triangle(mouseX, mouseY - 25, mouseX, mouseY + 25, mouseX - 360, mouseY);
   } else {
-    drawCreature(width / 2, height / 2, circleSize1, lineWidth1, eyeSize1, eyeSizeW1);
-    drawCreature(width / 2 + 100, height / 2 + 150, circleSize2, lineWidth2, eyeSize2, eyeSizeW2);
-    drawCreature(width / 2 - 150, height / 2 + 100, circleSize3, lineWidth3, eyeSize3, eyeSizeW3);
+    drawCreature(
+      width / 2,
+      height / 2,
+      circleSize1,
+      lineWidth1,
+      eyeSize1,
+      eyeSizeW1
+    );
+    drawCreature(
+      width / 2 + 100,
+      height / 2 + 150,
+      circleSize2,
+      lineWidth2,
+      eyeSize2,
+      eyeSizeW2
+    );
+    drawCreature(
+      width / 2 - 150,
+      height / 2 + 100,
+      circleSize3,
+      lineWidth3,
+      eyeSize3,
+      eyeSizeW3
+    );
   }
 }
 
@@ -106,28 +131,48 @@ function drawCreature(cx, cy, size, lineWidth, eyeSize, eyeSizeW) {
   }
 
   translate(0, 20 * sin(frameCount * 0.1));
-
-  push();
-  fill(30);
-  stroke(20);
-  line(0 + 14 - v, 0 + v, 0 + 32 - v + lineWidth, 0 + v);
-  line(0 + 12 - v, 0 + 7 + v, 0 + 28 - v + lineWidth, 0 + 16 + v + lineWidth);
-  line(0 + 10 - v, 0 + 10 + v, 0 + 23 - v + lineWidth, 0 + 23 + v + lineWidth);
-  line(0 + 7 - v, 0 + 12 + v, 0 + 16 - v + lineWidth, 0 + 28 + v + lineWidth);
-  line(0 - v, 0 + 14 + v, 0 - v, 0 + 32 + v + lineWidth);
-  line(0 - 7 - v, 0 + 12 + v, 0 - 16 - v - lineWidth, 0 + 28 + v + lineWidth);
-  line(0 - 10 - v, 0 + 10 + v, 0 - 23 - v - lineWidth, 0 + 23 + v + lineWidth);
-  line(0 - 12 - v, 0 + 7 + v, 0 - 28 - v - lineWidth, 0 + 16 + v + lineWidth);
-  line(0 - 14 - v, 0 + v, 0 - 32 - v - lineWidth, 0 + v);
-  line(0 - 12 - v, 0 - 7 + v, 0 - 28 - v - lineWidth, 0 - 16 + v - lineWidth);
-  line(0 - 10 - v, 0 - 10 + v, 0 - 23 - v - lineWidth, 0 - 23 + v - lineWidth);
-  line(0 - 7 - v, 0 - 12 + v, 0 - 16 - v - lineWidth, 0 - 28 + v - lineWidth);
-  line(0 - v, 0 - 14 + v, 0 - v, 0 - 32 + v - lineWidth);
-  line(0 + 7 - v, 0 - 12 + v, 0 + 16 - v + lineWidth, 0 - 28 + v - lineWidth);
-  line(0 + 10 - v, 0 - 10 + v, 0 + 23 - v + lineWidth, 0 - 23 + v - lineWidth);
-  line(0 + 12 - v, 0 - 7 + v, 0 + 28 - v + lineWidth, 0 - 16 + v - lineWidth);
-  pop();
-
+  if (mouseInCanvas()) {
+    push();
+    fill(30);
+    stroke(20);
+    line(0 + 14 - v, 0 + v, 0 + 32 - v + lineWidth, 0 + v);
+    line(0 + 12 - v, 0 + 7 + v, 0 + 28 - v + lineWidth, 0 + 16 + v + lineWidth);
+    line(
+      0 + 10 - v,
+      0 + 10 + v,
+      0 + 23 - v + lineWidth,
+      0 + 23 + v + lineWidth
+    );
+    line(0 + 7 - v, 0 + 12 + v, 0 + 16 - v + lineWidth, 0 + 28 + v + lineWidth);
+    line(0 - v, 0 + 14 + v, 0 - v, 0 + 32 + v + lineWidth);
+    line(0 - 7 - v, 0 + 12 + v, 0 - 16 - v - lineWidth, 0 + 28 + v + lineWidth);
+    line(
+      0 - 10 - v,
+      0 + 10 + v,
+      0 - 23 - v - lineWidth,
+      0 + 23 + v + lineWidth
+    );
+    line(0 - 12 - v, 0 + 7 + v, 0 - 28 - v - lineWidth, 0 + 16 + v + lineWidth);
+    line(0 - 14 - v, 0 + v, 0 - 32 - v - lineWidth, 0 + v);
+    line(0 - 12 - v, 0 - 7 + v, 0 - 28 - v - lineWidth, 0 - 16 + v - lineWidth);
+    line(
+      0 - 10 - v,
+      0 - 10 + v,
+      0 - 23 - v - lineWidth,
+      0 - 23 + v - lineWidth
+    );
+    line(0 - 7 - v, 0 - 12 + v, 0 - 16 - v - lineWidth, 0 - 28 + v - lineWidth);
+    line(0 - v, 0 - 14 + v, 0 - v, 0 - 32 + v - lineWidth);
+    line(0 + 7 - v, 0 - 12 + v, 0 + 16 - v + lineWidth, 0 - 28 + v - lineWidth);
+    line(
+      0 + 10 - v,
+      0 - 10 + v,
+      0 + 23 - v + lineWidth,
+      0 - 23 + v - lineWidth
+    );
+    line(0 + 12 - v, 0 - 7 + v, 0 + 28 - v + lineWidth, 0 - 16 + v - lineWidth);
+    pop();
+  }
   circle(0 - v, 0 + v, size);
 
   noStroke();
@@ -146,13 +191,13 @@ function drawCreature(cx, cy, size, lineWidth, eyeSize, eyeSizeW) {
 }
 //change background to a cool version
 function keyPressed() {
-  if (key == ' ') {
+  if (key == " ") {
     spaceMode = true;
     background(22, 55, 95);
   }
 }
 function keyReleased() {
-  if (key == ' ') {
+  if (key == " ") {
     spaceMode = false;
   }
 }
