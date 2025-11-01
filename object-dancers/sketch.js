@@ -46,7 +46,6 @@ class pigchick {
     this.x = width / 2 + sin(frameCount * 0.05) * 10;
     this.y = height / 2 + cos(frameCount * 0.05) * 10;
 
-    // Calculate animation values
     this.bodySway = map(sin(frameCount / 50), -1, 1, -10, 10);
     this.hairSway = map(sin(frameCount * 0.1), -1, 1, -5, 5);
 
