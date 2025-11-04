@@ -112,14 +112,14 @@ class pigchick {
     circle(this.bodySway + 5, 225, 5);
 
     // other emotions
-    if (this.emotion === 'cry') {
+    if (this.emotion == 'cry') {
       stroke(150, 75, 0);
       fill(137, 207, 240);
       strokeWeight(1.5);
       arc(this.bodySway - 25, 212, 8, 12, 0, PI); // cry
     }
 
-    if (this.emotion === 'blush') {
+    if (this.emotion == 'blush') {
       stroke(221, 123, 123);
       strokeWeight(1.5);
       line(this.bodySway - 27, 230, this.bodySway - 25, 220); // blush
