@@ -38,7 +38,6 @@ class Particle {
     this.dia = 30;
     this.speedX = random(-1, 1);
     this.speedY = random(-2, -1);
-    this.isVisible = true;
     this.s = s;
   }
   // methods (functions): particle's behaviors
