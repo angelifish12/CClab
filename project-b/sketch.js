@@ -124,7 +124,7 @@ function draw() {
 
             // calculate the rotation angle from the eyes
             let angle = degrees(atan2(face.rightEye.centerY - face.leftEye.centerY, face.rightEye.centerX - face.leftEye.centerX)) - 180;
-            console.log('angle is', angle);
+            console.log("angle is", angle);
 
             // draw nose
             circle(videoX + noseX, videoY + noseY, noseSize * faceHeight / 10);
