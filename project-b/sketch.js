@@ -1,3 +1,5 @@
+
+
 let faceMesh;
 let video;
 let faces = [];
@@ -5,6 +7,7 @@ let options = { maxFaces: 1, refineLandmarks: false, flipHorizontal: false };
 let gifs = [];
 let currentGif = 0;
 let gameStartSound;
+let clickSound;
 let firstEnter = true;
 
 // let background;
@@ -40,6 +43,7 @@ function preload() {
     gifs[3] = loadImage("assets/lip.gif");
     rabbitImg = loadImage("assets/rabbit.gif");
     gameStartSound = loadSound("assets/gamestart.mp3");
+    clickSound = loadSound("assets/click.mp3");
     rabbit = new Rabbit(520, 240, 200);
 }
 function setup() {
@@ -194,10 +198,10 @@ function keyPressed() {
         paused = !paused;  // inverts paused
         pausedVideo = video.get();  // make a copy of the current camera frame
     }
-    if (key == '1') currentGif = 0;
-    if (key == '2') currentGif = 1;
-    if (key == '3') currentGif = 2;
-    if (key == '4') currentGif = 3;
+    if (key == '1') { currentGif = 0; clickSound.play(); }
+    if (key == '2') { currentGif = 1; clickSound.play(); }
+    if (key == '3') { currentGif = 2; clickSound.play(); }
+    if (key == '4') { currentGif = 3; clickSound.play(); }
 }
 class Rabbit {
     constructor(x, y, size) {
