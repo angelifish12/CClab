@@ -3,16 +3,15 @@ let video;
 let faces = [];
 let options = { maxFaces: 1, refineLandmarks: false, flipHorizontal: false };
 let gifs = [];
-let gif = 0;
+let gif = -1;
 let gameStartSound;
 let clickSound;
+let sizeSound;
+let select;
+let bgm;
 let firstEnter = true;
 
-// let background;
-// let img;
-
 let eyeSize = 1;
-let eyebrowColor = 255;
 let mouthHeight = 60;
 let noseSize = 1;
 let lipsScale = 1;
@@ -38,9 +37,32 @@ let lipsCenterX = 0;
 let lipsCenterY = 0;
 
 let eyeImages = [];
+let flippedEyeImages = [];
 let eyeImage = 0;
 let eyeBoxSize = 45;
 let eyeBoxPadding = 5;
+
+let noseImages = [];
+let noseImage = 0;
+let noseBoxSize = 45;
+let noseBoxPadding = 5;
+
+let brownCircleX = 30;
+let brownCircleY = 50;
+let greyCircleX = 30;
+let greyCircleY = 110;
+let circleSize = 40;
+let eyebrowColor = "#000000";
+
+let plusImg;
+let minusImg;
+let sizeIncreased = false;
+let sizeDecreased = false;
+let plusButtonX = 640;
+let plusButtonY = 400;
+let minusButtonX = 760;
+let minusButtonY = 400;
+let buttonSize = 80;
 
 function preload() {
     faceMesh = ml5.faceMesh(options);
@@ -49,36 +71,43 @@ function preload() {
     gifs[2] = loadImage("assets/eyebrow.gif");
     gifs[3] = loadImage("assets/lip.gif");
     rabbitImg = loadImage("assets/rabbit.gif");
+    plusImg = loadImage("assets/plus.gif");
+    minusImg = loadImage("assets/minus.gif");
     gameStartSound = loadSound("assets/gamestart.mp3");
     clickSound = loadSound("assets/click.mp3");
-    rabbit = new Rabbit(520, 240, 200);
+    select = loadSound("assets/select.mp3");
+    sizeSound = loadSound("assets/size.mp3");
+    bgm = loadSound("assets/bgm.mp3");
 
     eyeImages = new Array(8);
-    // eye img
+    flippedEyeImages = new Array(8);
     for (let i = 1; i <= 7; i++) {
         eyeImages[i] = loadImage("assets/eyes" + i + ".png");
+        flippedEyeImages[i] = loadImage("assets/eyes" + i + "-2.png");
     }
+    noseImages = new Array(6);
+    for (let i = 1; i <= 5; i++) {
+        noseImages[i] = loadImage("assets/nose" + i + ".png");
+    }
+
+    rabbit = new Rabbit(520, 240, 200);
 }
+
 function setup() {
     let canvas = createCanvas(1040, 480);
     canvas.parent("p5-canvas-container");
-    // background = createGraphics(width, height);
-    // Create the webcam video and hide it
     video = createCapture(VIDEO);
     video.size(videoWidth, videoHeight);
     video.hide();
-    // Start detecting faces from the webcam video
     faceMesh.detectStart(video, gotFaces);
     noCursor();
 }
 
-
 function draw() {
     background(255);
-    // Draw the webcam video
+
     if (showWebcam == false) {
         rabbit.display();
-        // normal cursor outside the camera
         cursor(ARROW);
     } else {
         if (paused == false) {
@@ -86,41 +115,14 @@ function draw() {
         } else {
             image(pausedVideo, videoX, videoY, videoWidth, videoHeight);
         }
-        if (faces.length > 0) {
+
+        if (faces.length > 0 && gif >= 0) {
             let face = faces[0];
-            //console.log(face);
-
             let faceHeight = face.box.height;
-
-            // eat pill
-            // for (let i = 0; i < faces.length; i++) {
-
-            //     let face = faces[i];
-            //     let p1 = face.keypoints[0];
-            //     let p2 = face.keypoints[14];
-            //     fill(0, 255, 0);
-            //     noStroke();
-            //     circle(p1.x, p1.y, 5);
-            //     circle(p2.x, p2.y, 5);
-            //     let d = dist(p1.x, p1.y, p2.x, p2.y);
-            //     console.log(d);
-            //     fill(0);
-            //     circle(x, y, 50);
-            //     if (d > 40) {
-            //       x = lerp(x, p1.x, 0.1);
-            //       y = lerp(y, p1.y, 0.1);
-            //     }
-
-            //     for (let j = 0; j < face.keypoints.length; j++) {
-            //       let keypoint = face.keypoints[j];
-            //     }
-            //   }
-            // }
-
 
             fill(255);
             noStroke();
-            //circle
+
             if (eyeImage == 0) {
                 circle(
                     videoX + face.leftEye.centerX,
@@ -132,87 +134,102 @@ function draw() {
                     videoY + face.rightEye.centerY,
                     eyeSize * faceHeight * 0.1
                 );
-                // other eye img
             } else {
-                // draw from center
                 imageMode(CENTER);
                 let eyeImgSize = eyeSize * faceHeight * 0.2;
-                // maximun eye size
                 let maxEyeSize = face.box.width * 0.8;
                 if (eyeImgSize > maxEyeSize) {
                     eyeImgSize = maxEyeSize;
                 }
 
-                image(
-                    eyeImages[eyeImage],
-                    videoX + face.leftEye.centerX,
-                    videoY + face.leftEye.centerY,
-                    eyeImgSize,
-                    eyeImgSize
-                );
-                image(
-                    eyeImages[eyeImage],
-                    videoX + face.rightEye.centerX,
-                    videoY + face.rightEye.centerY,
-                    eyeImgSize,
-                    eyeImgSize
-                );
-
+                let isLeftEye = (eyeImage == 1 || eyeImage == 2 || eyeImage == 4 || eyeImage == 6 || eyeImage == 7);
+                if (isLeftEye) {
+                    image(
+                        eyeImages[eyeImage],
+                        videoX + face.leftEye.centerX,
+                        videoY + face.leftEye.centerY,
+                        eyeImgSize,
+                        eyeImgSize
+                    );
+                    image(
+                        flippedEyeImages[eyeImage],
+                        videoX + face.rightEye.centerX,
+                        videoY + face.rightEye.centerY,
+                        eyeImgSize,
+                        eyeImgSize
+                    );
+                } else {
+                    image(
+                        flippedEyeImages[eyeImage],
+                        videoX + face.leftEye.centerX,
+                        videoY + face.leftEye.centerY,
+                        eyeImgSize,
+                        eyeImgSize
+                    );
+                    image(
+                        eyeImages[eyeImage],
+                        videoX + face.rightEye.centerX,
+                        videoY + face.rightEye.centerY,
+                        eyeImgSize,
+                        eyeImgSize
+                    );
+                }
                 imageMode(CORNER);
             }
-            // draw eyebrow
+
             stroke(eyebrowColor);
             strokeWeight(5);
             noFill();
 
-            // left eyebrow
             let leftBrowStartX = videoX + face.leftEyebrow.centerX - 30;
             let leftBrowEndX = videoX + face.leftEyebrow.centerX + 30;
             let leftBrowY = videoY + face.leftEyebrow.centerY;
             line(leftBrowStartX, leftBrowY, leftBrowEndX, leftBrowY);
 
-            // right eyebrow
             let rightBrowStartX = videoX + face.rightEyebrow.centerX - 30;
             let rightBrowEndX = videoX + face.rightEyebrow.centerX + 30;
             let rightBrowY = videoY + face.rightEyebrow.centerY;
             line(rightBrowStartX, rightBrowY, rightBrowEndX, rightBrowY);
+
             noStroke();
             fill(255);
-            // estimate the nose position from
-            // eyes and mouth
+
             let eyeCenterX = (face.leftEye.centerX + face.rightEye.centerX) / 2;
             let eyeCenterY = (face.leftEye.centerY + face.rightEye.centerY) / 2;
+            let angle = degrees(atan2(face.rightEye.centerY - face.leftEye.centerY, face.rightEye.centerX - face.leftEye.centerX)) - 180;
+
             let noseX = (eyeCenterX + face.lips.centerX) / 2;
             let noseY = (eyeCenterY + face.lips.centerY) / 2;
 
-            // calculate the rotation angle from the eyes, now dont rly use
-            let angle = degrees(atan2(face.rightEye.centerY - face.leftEye.centerY, face.rightEye.centerX - face.leftEye.centerX)) - 180;
-            // console.log("angle is", angle);
+            if (noseImage == 0) {
+                fill(255);
+                noStroke();
+                ellipse(videoX + noseX, videoY + noseY, noseSize * faceHeight / 10, faceHeight / 15);
+            } else {
+                imageMode(CENTER);
+                let noseImgWidth = noseSize * faceHeight * 0.35;
+                let noseImgHeight = faceHeight * 0.25;
+                let maxNoseWidth = face.box.width * 1;
+                if (noseImgWidth > maxNoseWidth) {
+                    noseImgWidth = maxNoseWidth;
+                }
+                image(
+                    noseImages[noseImage],
+                    videoX + noseX,
+                    videoY + noseY,
+                    noseImgWidth,
+                    noseImgHeight
+                );
+                imageMode(CORNER);
+            }
 
-            // draw nose
-            circle(videoX + noseX, videoY + noseY, noseSize * faceHeight / 10);
-
-            // code for figuring out keypoints
-
-            // for (let i = 0; i < face.keypoints.length; i++) {
-            //     let kp = face.keypoints[i];
-            //     let d = dist(mouseX, mouseY, kp.x, kp.y);
-            //     if (d < 3) {
-            //         fill(255);
-            //         textSize(14);
-            //         textAlign(CENTER, CENTER);
-            //         text(i, kp.x, kp.y);
-            //         break;
-            //     }
-            // }
-            // saving values
             lipsCenterX = face.lips.centerX;
             lipsCenterY = face.lips.centerY;
 
             let cx = face.lips.centerX;
             let cy = face.lips.centerY;
             let kps = face.keypoints;
-            // lips
+
             push();
             translate(cx, cy);
             scale(lipsScale, lipsScale);
@@ -237,35 +254,174 @@ function draw() {
         if (gif == 1) {
             drawEyeSelectionBoxes();
         }
-        // draws
-        image(gifs[gif], gifX, gifY, gifWidth, gifHeight)
-        // image(background, 0, 0);
-        // video outline
+        if (gif == 0) {
+            drawNoseSelectionBoxes();
+        }
+        if (gif == 2) {
+            fill("#964B00");
+            noStroke();
+            circle(brownCircleX, brownCircleY, circleSize);
+
+            fill("#8f8f8e");
+            circle(greyCircleX, greyCircleY, circleSize);
+
+            if (mouseX > 200 && mouseX < 400) {
+                let brightness = map(mouseX, 200, 400, -100, 100);
+                let baseColor = color(eyebrowColor);
+                let r = red(baseColor) + brightness;
+                let g = green(baseColor) + brightness;
+                let b = blue(baseColor) + brightness;
+                eyebrowColor = color(r, g, b);
+            }
+        }
+
+        if (gif >= 0) {
+            image(gifs[gif], gifX, gifY, gifWidth, gifHeight);
+
+            if (gif == 0 || gif == 1) {
+                if (sizeDecreased == false) {
+                    image(plusImg, plusButtonX, plusButtonY, buttonSize, buttonSize);
+                } else {
+                    tint(128, 128);
+                    image(plusImg, plusButtonX, plusButtonY, buttonSize, buttonSize);
+                    noTint();
+                }
+
+                if (sizeIncreased == false) {
+                    image(minusImg, minusButtonX, minusButtonY, buttonSize, buttonSize);
+                } else {
+                    tint(128, 128);
+                    image(minusImg, minusButtonX, minusButtonY, buttonSize, buttonSize);
+                    noTint();
+                }
+            }
+        }
+
         noFill();
         stroke(255);
         strokeWeight(2);
         rect(videoX, videoY, videoWidth, videoHeight);
-        if (gif == 3) {
-            imageMode(CENTER);
-            // lips at mouse position
-            image(gifs[3], mouseX, mouseY, 60, 60);
-            // resets to default
-            imageMode(CORNER);
+
+        let overSelectionBox = false;
+
+        if (gif == 0) {
+            let startX = 10;
+            let startY = videoY + 10;
+            for (let i = 0; i < 6; i++) {
+                let boxX = startX;
+                let boxY = startY + i * (noseBoxSize + noseBoxPadding);
+                if (mouseX >= boxX && mouseX <= boxX + noseBoxSize &&
+                    mouseY >= boxY && mouseY <= boxY + noseBoxSize) {
+                    overSelectionBox = true;
+                    break;
+                }
+            }
+        }
+
+        if (gif == 1) {
+            let startX = 10;
+            let startY = videoY + 10;
+            for (let i = 0; i < 8; i++) {
+                let boxX = startX;
+                let boxY = startY + i * (eyeBoxSize + eyeBoxPadding);
+                if (mouseX >= boxX && mouseX <= boxX + eyeBoxSize &&
+                    mouseY >= boxY && mouseY <= boxY + eyeBoxSize) {
+                    overSelectionBox = true;
+                    break;
+                }
+            }
+        }
+
+        let overWebcam = mouseX >= videoX && mouseX <= videoX + videoWidth &&
+            mouseY >= videoY && mouseY <= videoY + videoHeight;
+
+        if (overWebcam && !overSelectionBox && gif >= 0) {
+            if (gif == 0) {
+                imageMode(CENTER);
+                image(gifs[0], mouseX, mouseY, 60, 60);
+                imageMode(CORNER);
+                strokeWeight(4);
+                text('nose injection', 50, 50);
+            } else if (gif == 1) {
+                imageMode(CENTER);
+                image(gifs[1], mouseX, mouseY, 60, 60);
+                imageMode(CORNER);
+                strokeWeight(4);
+                text('eye sculptor', 50, 50);
+            } else if (gif == 2) {
+                imageMode(CENTER);
+                image(gifs[2], mouseX, mouseY, 60, 60);
+                imageMode(CORNER);
+                strokeWeight(4);
+                text('brow mist', 50, 50);
+            } else if (gif == 3) {
+                imageMode(CENTER);
+                image(gifs[3], mouseX, mouseY, 60, 60);
+                imageMode(CORNER);
+                strokeWeight(4);
+                text('lip plump', 50, 50);
+            }
+        } else if (overSelectionBox) {
+            cursor(ARROW);
+        } else {
+            cursor(ARROW);
         }
     }
 }
 
-// eye selection boxes
-function drawEyeSelectionBoxes() {
-    let startX = 10; // left side
+function drawNoseSelectionBoxes() {
+    let startX = 10;
     let startY = videoY + 10;
 
-    // boxes
+    for (let i = 0; i < 6; i++) {
+        let boxX = startX;
+        let boxY = startY + i * (noseBoxSize + noseBoxPadding);
+
+        if (noseImage == i) {
+            fill(200, 200, 255);
+            stroke(0, 0, 255);
+            strokeWeight(3);
+        } else {
+            fill(255);
+            stroke(0);
+            strokeWeight(1);
+        }
+        rect(boxX, boxY, noseBoxSize, noseBoxSize);
+
+        if (i == 0) {
+            fill(255);
+            noStroke();
+            circle(boxX + noseBoxSize / 2, boxY + noseBoxSize / 2, noseBoxSize * 0.5);
+        } else {
+            imageMode(CORNER);
+            let img = noseImages[i];
+            let imgAspect = img.width / img.height;
+            let displayWidth, displayHeight;
+
+            if (imgAspect > 1) {
+                displayWidth = noseBoxSize * 0.9;
+                displayHeight = displayWidth / imgAspect;
+            } else {
+                displayHeight = noseBoxSize * 0.9;
+                displayWidth = displayHeight * imgAspect;
+            }
+
+            let imgX = boxX + (noseBoxSize - displayWidth) / 2;
+            let imgY = boxY + (noseBoxSize - displayHeight) / 2;
+
+            image(noseImages[i], imgX, imgY, displayWidth, displayHeight);
+        }
+    }
+}
+
+function drawEyeSelectionBoxes() {
+    let startX = 10;
+    let startY = videoY + 10;
+
     for (let i = 0; i < 8; i++) {
         let boxX = startX;
         let boxY = startY + i * (eyeBoxSize + eyeBoxPadding);
 
-        // box bg
         if (eyeImage == i) {
             fill(200, 200, 255);
             stroke(0, 0, 255);
@@ -277,15 +433,12 @@ function drawEyeSelectionBoxes() {
         }
         rect(boxX, boxY, eyeBoxSize, eyeBoxSize);
 
-        // eye preview on top of the box
         if (i == 0) {
             fill(255);
             noStroke();
             circle(boxX + eyeBoxSize / 2, boxY + eyeBoxSize / 2, eyeBoxSize * 0.5);
         } else {
-            // no compression
             imageMode(CORNER);
-            // original img dimension
             let img = eyeImages[i];
             let imgAspect = img.width / img.height;
             let displayWidth, displayHeight;
@@ -298,7 +451,6 @@ function drawEyeSelectionBoxes() {
                 displayWidth = displayHeight * imgAspect;
             }
 
-            // center img in the box
             let imgX = boxX + (eyeBoxSize - displayWidth) / 2;
             let imgY = boxY + (eyeBoxSize - displayHeight) / 2;
 
@@ -307,9 +459,7 @@ function drawEyeSelectionBoxes() {
     }
 }
 
-// Callback function for when faceMesh outputs data
 function gotFaces(results) {
-    // Save the output to the faces variable
     if (paused == false) {
         faces = results;
     }
@@ -319,17 +469,50 @@ function mousePressed() {
     if (showWebcam == false) {
         if (rabbit.isClicked(mouseX, mouseY)) {
             showWebcam = true;
-            // javascript
             document.getElementById("title").classList.remove("hidden-text");
             document.getElementById("instructions").classList.remove("hidden-text");
+            document.getElementById("tool-info").classList.remove("hidden-text");
+            bgm.loop();
         }
     } else {
-        // check if clicking on eye selection boxes
+        if (gif == 0 || gif == 1) {
+            if (mouseX >= plusButtonX && mouseX <= plusButtonX + buttonSize &&
+                mouseY >= plusButtonY && mouseY <= plusButtonY + buttonSize) {
+                if (sizeDecreased == false) {
+                    if (gif == 0) {
+                        noseSize = noseSize + 0.2;
+                    } else if (gif == 1) {
+                        eyeSize++;
+                    }
+                    sizeIncreased = true;
+                    select.play();
+                }
+                return;
+            }
+
+            if (mouseX >= minusButtonX && mouseX <= minusButtonX + buttonSize &&
+                mouseY >= minusButtonY && mouseY <= minusButtonY + buttonSize) {
+                if (sizeIncreased == false) {
+                    if (gif == 0) {
+                        if (noseSize > 0.2) {
+                            noseSize = noseSize - 0.2;
+                        }
+                    } else if (gif == 1) {
+                        if (eyeSize > 0.5) {
+                            eyeSize--;
+                        }
+                    }
+                    sizeDecreased = true;
+                    select.play();
+                }
+                return;
+            }
+        }
+
         if (gif == 1) {
-            let startX = 10; // left
+            let startX = 10;
             let startY = videoY + 10;
 
-            // box
             for (let i = 0; i < 8; i++) {
                 let boxX = startX;
                 let boxY = startY + i * (eyeBoxSize + eyeBoxPadding);
@@ -337,55 +520,93 @@ function mousePressed() {
                 if (mouseX >= boxX && mouseX <= boxX + eyeBoxSize &&
                     mouseY >= boxY && mouseY <= boxY + eyeBoxSize) {
                     eyeImage = i;
-                    clickSound.play();
+                    select.play();
                     return;
                 }
             }
         }
 
-        // lips selected
+        if (gif == 0) {
+            let startX = 10;
+            let startY = videoY + 10;
+
+            for (let i = 0; i < 6; i++) {
+                let boxX = startX;
+                let boxY = startY + i * (noseBoxSize + noseBoxPadding);
+
+                if (mouseX >= boxX && mouseX <= boxX + noseBoxSize &&
+                    mouseY >= boxY && mouseY <= boxY + noseBoxSize) {
+                    noseImage = i;
+                    select.play();
+                    return;
+                }
+            }
+        }
+
+        if (gif == 2) {
+            let dBrown = dist(mouseX, mouseY, brownCircleX, brownCircleY);
+            if (dBrown < circleSize / 2) {
+                eyebrowColor = "#964B00";
+                select.play();
+                return;
+            }
+
+            let dGrey = dist(mouseX, mouseY, greyCircleX, greyCircleY);
+            if (dGrey < circleSize / 2) {
+                eyebrowColor = "#8f8f8e";
+                select.play();
+                return;
+            }
+        }
+
         if (gif == 3 && faces.length > 0) {
-            // click on the lips area
             let d = dist(mouseX, mouseY, lipsCenterX, lipsCenterY);
             if (d < 50) {
                 lipsScale += 0.05;
                 lipsStroke += 2;
-                // max
                 if (lipsScale > 2) lipsScale = 2;
                 if (lipsStroke > 40) lipsStroke = 40;
 
-                clickSound.play();
+                select.play();
             }
         }
     }
 }
 
 function keyPressed() {
-    if (keyCode == UP_ARROW) {
-        if (gif == 0) {
-            if (noseSize > 0.2) {
-                noseSize = noseSize - 0.2;
-            }
-        } else if (gif == 1) {
-            eyeSize++;
-        } else if (gif == 2) {
-            eyebrowColor = eyebrowColor - 15;
-        }
-    }
-
     if (keyCode == ENTER) {
         if (firstEnter == true) {
             gameStartSound.play();
             firstEnter = false;
         }
-        paused = !paused;  // inverts paused
-        pausedVideo = video.get();  // make a copy of the current camera frame
+        paused = !paused;
+        if (paused) {
+            pausedVideo = video.get();
+        }
     }
-    if (key == "1") { gif = 0; clickSound.play(); }
-    if (key == "2") { gif = 1; clickSound.play(); }
-    if (key == "3") { gif = 2; clickSound.play(); }
-    if (key == "4") { gif = 3; clickSound.play(); }
+
+    if (key == '1') {
+        gif = 0;
+        sizeIncreased = false;
+        sizeDecreased = false;
+        clickSound.play();
+    }
+    if (key == '2') {
+        gif = 1;
+        sizeIncreased = false;
+        sizeDecreased = false;
+        clickSound.play();
+    }
+    if (key == '3') {
+        gif = 2;
+        clickSound.play();
+    }
+    if (key == '4') {
+        gif = 3;
+        clickSound.play();
+    }
 }
+
 class Rabbit {
     constructor(x, y, size) {
         this.x = x;
@@ -393,14 +614,12 @@ class Rabbit {
         this.size = size;
     }
     display() {
-        // Draw rabbit
         imageMode(CENTER);
         image(rabbitImg, this.x, this.y, this.size, this.size);
         imageMode(CORNER);
     }
 
     isClicked(mx, my) {
-        // mouse
         let d = dist(mx, my, this.x, this.y);
         return d < this.size / 2;
     }

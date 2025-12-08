@@ -6,22 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>CCLab Project</title>
+    <title>Dear Dream Me...</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.10/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.10/addons/p5.sound.min.js"></script>
     <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
-    <!-- <script src="lib/p5.js"></script>
-    <script src="lib/p5.sound.js"></script> -->
-
-    <!-- Alternatively, you can import the library via CDN (Content Delivery Network). -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/addons/p5.sound.js"></script> -->
 
     <div class="main-wrapper">
         <h1 id="title" class="hidden-text">Dear Dream Me</h1>
@@ -30,10 +26,31 @@
         <div id="p5-canvas-container">
             <!-- p5 canvas will be appended here. -->
             <pre id="instructions" class="hidden-text">
-     - press [enter] to freeze the frame& start the game
-     - select tool [1] - [4]
-     - press [↑] to adjust the size
-    </pre>
+     - press [enter] to freeze the frame
+        </div>
+
+        <!-- Tool descriptions -->
+        <div id="tool-info" class="hidden-text">
+            <div class="tool-item">
+                <span class="tool-key">[key 1]</span>
+                <span class="tool-name">👃🏻:</span>
+                <span class="tool-desc">The nose injection adjusts your nose width</span>
+            </div>
+            <div class="tool-item">
+                <span class="tool-key">[key 2]</span>
+                <span class="tool-name">👁️:</span>
+                <span class="tool-desc">The eye sculptor lets you customize your eye shape and eye size.</span>
+            </div>
+            <div class="tool-item">
+                <span class="tool-key">[key 3]</span>
+                <span class="tool-name">ծ_Ô:</span>
+                <span class="tool-desc">“The brow mist tool adjusts your eyebrow color.</span>
+            </div>
+            <div class="tool-item">
+                <span class="tool-key">[key 4]</span>
+                <span class="tool-name">👄:</span>
+                <span class="tool-desc">The lip plump tool boosts lip fullness for a fuller look.</span>
+            </div>
         </div>
 
         <!-- the script tag below should always be at the bottom, right before the closing body tag -->
