@@ -9,6 +9,8 @@ let clickSound;
 let sizeSound;
 let select;
 let bgm;
+let reset;
+let camera;
 let firstEnter = true;
 
 let eyeSize = 1;
@@ -76,7 +78,9 @@ function preload() {
     gameStartSound = loadSound("assets/gamestart.mp3");
     clickSound = loadSound("assets/click.mp3");
     select = loadSound("assets/select.mp3");
+    camera = loadImage("assets/image.gif");
     sizeSound = loadSound("assets/size.mp3");
+    reset = loadImage("assets/reset.gif");
     bgm = loadSound("assets/bgm.mp3");
 
     eyeImages = new Array(8);
@@ -265,13 +269,20 @@ function draw() {
             fill("#8f8f8e");
             circle(greyCircleX, greyCircleY, circleSize);
 
-            if (mouseX > 200 && mouseX < 400) {
-                let brightness = map(mouseX, 200, 400, -100, 100);
-                let baseColor = color(eyebrowColor);
-                let r = red(baseColor) + brightness;
-                let g = green(baseColor) + brightness;
-                let b = blue(baseColor) + brightness;
-                eyebrowColor = color(r, g, b);
+            // Lerp between grey shades when mouse is in grey area
+            if (mouseX > 200 && mouseX < 400 && mouseY > 90 && mouseY < 130) {
+                let t = map(mouseX, 200, 400, 0, 1);
+                let lightGrey = color("#d3d3d3");
+                let darkGrey = color("#151515");
+                eyebrowColor = lerpColor(lightGrey, darkGrey, t);
+            }
+
+            // Lerp between brown shades when mouse is in brown area
+            if (mouseX > 200 && mouseX < 400 && mouseY > 30 && mouseY < 70) {
+                let t = map(mouseX, 200, 400, 0, 1);
+                let lightBrown = color("#5c4033");
+                let darkBrown = color("#090605");
+                eyebrowColor = lerpColor(lightBrown, darkBrown, t);
             }
         }
 
@@ -485,7 +496,7 @@ function mousePressed() {
                         eyeSize++;
                     }
                     sizeIncreased = true;
-                    select.play();
+                    sizeSound.play();
                 }
                 return;
             }
@@ -503,7 +514,7 @@ function mousePressed() {
                         }
                     }
                     sizeDecreased = true;
-                    select.play();
+                    sizeSound.play();
                 }
                 return;
             }
