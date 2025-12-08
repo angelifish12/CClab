@@ -60,10 +60,10 @@ let plusImg;
 let minusImg;
 let sizeIncreased = false;
 let sizeDecreased = false;
-let plusButtonX = 640;
-let plusButtonY = 400;
-let minusButtonX = 760;
-let minusButtonY = 400;
+let plusX = 640;
+let plusY = 400;
+let minusX = 760;
+let minusY = 400;
 let buttonSize = 80;
 
 function preload() {
@@ -78,7 +78,7 @@ function preload() {
     gameStartSound = loadSound("assets/gamestart.mp3");
     clickSound = loadSound("assets/click.mp3");
     select = loadSound("assets/select.mp3");
-    camera = loadImage("assets/image.gif");
+    camera = loadImage("assets/camera.gif");
     sizeSound = loadSound("assets/size.mp3");
     reset = loadImage("assets/reset.gif");
     bgm = loadSound("assets/bgm.mp3");
@@ -291,19 +291,19 @@ function draw() {
 
             if (gif == 0 || gif == 1) {
                 if (sizeDecreased == false) {
-                    image(plusImg, plusButtonX, plusButtonY, buttonSize, buttonSize);
+                    image(plusImg, plusX, plusY, buttonSize, buttonSize);
                 } else {
                     tint(128, 128);
-                    image(plusImg, plusButtonX, plusButtonY, buttonSize, buttonSize);
+                    image(plusImg, plusX, plusY, buttonSize, buttonSize);
                     noTint();
                     // remove filter
                 }
 
                 if (sizeIncreased == false) {
-                    image(minusImg, minusButtonX, minusButtonY, buttonSize, buttonSize);
+                    image(minusImg, minusX, minusY, buttonSize, buttonSize);
                 } else {
                     tint(128, 128);
-                    image(minusImg, minusButtonX, minusButtonY, buttonSize, buttonSize);
+                    image(minusImg, minusX, minusY, buttonSize, buttonSize);
                     noTint();
                 }
             }
@@ -489,8 +489,8 @@ function mousePressed() {
         }
     } else {
         if (gif == 0 || gif == 1) {
-            if (mouseX >= plusButtonX && mouseX <= plusButtonX + buttonSize &&
-                mouseY >= plusButtonY && mouseY <= plusButtonY + buttonSize) {
+            if (mouseX >= plusX && mouseX <= plusX + buttonSize &&
+                mouseY >= plusY && mouseY <= plusY + buttonSize) {
                 if (sizeDecreased == false) {
                     if (gif == 0) {
                         noseSize = noseSize + 0.2;
@@ -503,8 +503,8 @@ function mousePressed() {
                 return;
             }
 
-            if (mouseX >= minusButtonX && mouseX <= minusButtonX + buttonSize &&
-                mouseY >= minusButtonY && mouseY <= minusButtonY + buttonSize) {
+            if (mouseX >= minusX && mouseX <= minusX + buttonSize &&
+                mouseY >= minusY && mouseY <= minusY + buttonSize) {
                 if (sizeIncreased == false) {
                     if (gif == 0) {
                         if (noseSize > 0.2) {
