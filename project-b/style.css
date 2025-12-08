@@ -27,7 +27,9 @@ h1 {
     color: rgb(253, 221, 240);
     font-size: 78px;
     text-shadow: 2px 2px 4px rgba(106, 15, 88, 0.3);
+    /* https://www.w3schools.com/cssref/css3_pr_text-shadow.php */
     margin-bottom: 30px;
+    /* https: //www.w3schools.com/cssref/pr_margin-bottom.php */
 }
 
 #instructions {
@@ -45,7 +47,7 @@ h1 {
     background-color: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(113, 2, 117, 0.1);
 }
 
 .tool-item {
