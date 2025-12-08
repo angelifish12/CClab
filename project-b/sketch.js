@@ -83,13 +83,13 @@ function preload() {
     reset = loadImage("assets/reset.gif");
     bgm = loadSound("assets/bgm.mp3");
 
-    eyeImages = new Array(8);
-    flippedEyeImages = new Array(8);
+    eyeImages = [];
+    flippedEyeImages = [];
     for (let i = 1; i <= 7; i++) {
         eyeImages[i] = loadImage("assets/eyes" + i + ".png");
         flippedEyeImages[i] = loadImage("assets/eyes" + i + "-2.png");
     }
-    noseImages = new Array(6);
+    noseImages = [];
     for (let i = 1; i <= 5; i++) {
         noseImages[i] = loadImage("assets/nose" + i + ".png");
     }
@@ -185,15 +185,15 @@ function draw() {
             strokeWeight(5);
             noFill();
 
-            let leftBrowStartX = videoX + face.leftEyebrow.centerX - 30;
-            let leftBrowEndX = videoX + face.leftEyebrow.centerX + 30;
-            let leftBrowY = videoY + face.leftEyebrow.centerY;
-            line(leftBrowStartX, leftBrowY, leftBrowEndX, leftBrowY);
+            let leftEyebrowStartX = videoX + face.leftEyebrow.centerX - 30;
+            let leftEyebrowEndX = videoX + face.leftEyebrow.centerX + 30;
+            let leftEyebrowY = videoY + face.leftEyebrow.centerY;
+            line(leftEyebrowStartX, leftEyebrowY, leftEyebrowEndX, leftEyebrowY);
 
-            let rightBrowStartX = videoX + face.rightEyebrow.centerX - 30;
-            let rightBrowEndX = videoX + face.rightEyebrow.centerX + 30;
-            let rightBrowY = videoY + face.rightEyebrow.centerY;
-            line(rightBrowStartX, rightBrowY, rightBrowEndX, rightBrowY);
+            let rightEyebrowStartX = videoX + face.rightEyebrow.centerX - 30;
+            let rightEyebrowEndX = videoX + face.rightEyebrow.centerX + 30;
+            let rightEyebrowY = videoY + face.rightEyebrow.centerY;
+            line(rightEyebrowStartX, rightEyebrowY, rightEyebrowEndX, rightEyebrowY);
 
             noStroke();
             fill(255);
@@ -256,10 +256,10 @@ function draw() {
         }
 
         if (gif == 1) {
-            drawEyeSelectionBoxes();
+            eyeSelectionBoxes();
         }
         if (gif == 0) {
-            drawNoseSelectionBoxes();
+            noseSelectionBoxes();
         }
         if (gif == 2) {
             fill("#964B00");
@@ -269,7 +269,7 @@ function draw() {
             fill("#8f8f8e");
             circle(greyCircleX, greyCircleY, circleSize);
 
-            // Lerp between grey shades when mouse is in grey area
+            // lerp between grey
             if (mouseX > 200 && mouseX < 400 && mouseY > 90 && mouseY < 130) {
                 let t = map(mouseX, 200, 400, 0, 1);
                 let lightGrey = color("#d3d3d3");
@@ -277,7 +277,7 @@ function draw() {
                 eyebrowColor = lerpColor(lightGrey, darkGrey, t);
             }
 
-            // Lerp between brown shades when mouse is in brown area
+            // lerp between brown
             if (mouseX > 200 && mouseX < 400 && mouseY > 30 && mouseY < 70) {
                 let t = map(mouseX, 200, 400, 0, 1);
                 let lightBrown = color("#5c4033");
@@ -296,6 +296,7 @@ function draw() {
                     tint(128, 128);
                     image(plusImg, plusButtonX, plusButtonY, buttonSize, buttonSize);
                     noTint();
+                    // remove filter
                 }
 
                 if (sizeIncreased == false) {
@@ -314,7 +315,7 @@ function draw() {
         rect(videoX, videoY, videoWidth, videoHeight);
 
         let overSelectionBox = false;
-
+        // google 
         if (gif == 0) {
             let startX = 10;
             let startY = videoY + 10;
@@ -345,7 +346,7 @@ function draw() {
 
         let overWebcam = mouseX >= videoX && mouseX <= videoX + videoWidth &&
             mouseY >= videoY && mouseY <= videoY + videoHeight;
-
+        // tool cursors only when over webcam
         if (overWebcam && !overSelectionBox && gif >= 0) {
             if (gif == 0) {
                 imageMode(CENTER);
@@ -380,7 +381,7 @@ function draw() {
     }
 }
 
-function drawNoseSelectionBoxes() {
+function noseSelectionBoxes() {
     let startX = 10;
     let startY = videoY + 10;
 
@@ -406,15 +407,15 @@ function drawNoseSelectionBoxes() {
         } else {
             imageMode(CORNER);
             let img = noseImages[i];
-            let imgAspect = img.width / img.height;
+            let aspect = img.width / img.height;
             let displayWidth, displayHeight;
 
-            if (imgAspect > 1) {
+            if (aspect > 1) {
                 displayWidth = noseBoxSize * 0.9;
-                displayHeight = displayWidth / imgAspect;
+                displayHeight = displayWidth / aspect;
             } else {
                 displayHeight = noseBoxSize * 0.9;
-                displayWidth = displayHeight * imgAspect;
+                displayWidth = displayHeight * aspect;
             }
 
             let imgX = boxX + (noseBoxSize - displayWidth) / 2;
@@ -425,7 +426,7 @@ function drawNoseSelectionBoxes() {
     }
 }
 
-function drawEyeSelectionBoxes() {
+function eyeSelectionBoxes() {
     let startX = 10;
     let startY = videoY + 10;
 
@@ -451,15 +452,15 @@ function drawEyeSelectionBoxes() {
         } else {
             imageMode(CORNER);
             let img = eyeImages[i];
-            let imgAspect = img.width / img.height;
+            let aspect = img.width / img.height;
             let displayWidth, displayHeight;
 
-            if (imgAspect > 1) {
+            if (aspect > 1) {
                 displayWidth = eyeBoxSize * 0.9;
-                displayHeight = displayWidth / imgAspect;
+                displayHeight = displayWidth / aspect;
             } else {
                 displayHeight = eyeBoxSize * 0.9;
-                displayWidth = displayHeight * imgAspect;
+                displayWidth = displayHeight * aspect;
             }
 
             let imgX = boxX + (eyeBoxSize - displayWidth) / 2;
@@ -483,6 +484,7 @@ function mousePressed() {
             document.getElementById("title").classList.remove("hidden-text");
             document.getElementById("instructions").classList.remove("hidden-text");
             document.getElementById("tool-info").classList.remove("hidden-text");
+            // javascript
             bgm.loop();
         }
     } else {
