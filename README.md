@@ -1,4 +1,3 @@
-![kitty](kittyy.png)
 # Welcome to Angelina's Page
 > Rénshēng wúcháng dàcháng bāo xiǎocháng
 
