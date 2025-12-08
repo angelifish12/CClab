@@ -44,7 +44,7 @@ let eyeImages = [];
 let flippedEyeImages = [];
 let eyeImage = 0;
 let eyeBoxSize = 45;
-let eyeBoxPadding = 5;
+let eyeBoxPadding = 5; //space between boxes
 
 let noseImages = [];
 let noseImage = 0;
@@ -83,7 +83,7 @@ let resetButtonX = 420;
 let resetButtonY = 490;
 let resetButtonSize = 80;
 
-let showUI = true;
+let cameraAction = true;
 
 function preload() {
     faceMesh = ml5.faceMesh(options);
@@ -146,15 +146,15 @@ function draw() {
         if (faces.length > 0 && gif >= 0) {
             let face = faces[0];
             let faceHeight = face.box.height;
-
+            //eye center on users eye
             if (eyeImage > 0) {
                 imageMode(CENTER);
-                let eyeImgSize = eyeSize * faceHeight * 0.2;
+                let eyeImgSize = eyeSize * faceHeight * 0.2; //size of the eye img
                 let maxEyeSize = face.box.width * 0.8;
                 if (eyeImgSize > maxEyeSize) {
-                    eyeImgSize = maxEyeSize;
+                    eyeImgSize = maxEyeSize; //maximun eye size
                 }
-
+                //which eye img the user picks
                 let isLeftEye = (eyeImage == 1 || eyeImage == 2 || eyeImage == 4 || eyeImage == 6 || eyeImage == 7);
                 if (isLeftEye) {
                     image(
@@ -189,6 +189,8 @@ function draw() {
                 }
                 imageMode(CORNER);
             }
+
+            // examples from https://editor.p5js.org/xinxin/sketches/nC-CYIRGt
 
             if (eyebrowSelected) {
                 stroke(eyebrowColor);
@@ -233,7 +235,7 @@ function draw() {
 
             lipsCenterX = face.lips.centerX;
             lipsCenterY = face.lips.centerY;
-
+            //lips
             if (lipsVisible) {
                 let cx = face.lips.centerX;
                 let cy = face.lips.centerY;
@@ -261,7 +263,7 @@ function draw() {
             }
         }
 
-        if (showUI) {
+        if (cameraAction) {
             if (gif == 1) {
                 drawEyeSelectionBoxes();
             }
@@ -270,7 +272,8 @@ function draw() {
             }
             if (gif == 2) {
                 fill("#964B00");
-                noStroke();
+                stroke(244, 194, 194);
+                strokeWeight(2);
                 circle(brownCircleX, brownCircleY, circleSize);
 
                 fill("#8f8f8e");
@@ -292,9 +295,9 @@ function draw() {
             }
 
             if (gif >= 0) {
-                fill(0);
+                fill('pink');
                 noStroke();
-                textSize(20);
+                textSize(30);
                 textAlign(CENTER, CENTER);
                 textFont('Indie Flower');
 
@@ -360,15 +363,15 @@ function draw() {
             let startY = videoY + 10;
             for (let i = 0; i < 8; i++) {
                 let boxX = startX;
-                let boxY = startY + i * (eyeBoxSize + eyeBoxPadding);
+                let boxY = startY + i * (eyeBoxSize + eyeBoxPadding); // if the mouse inside the box
                 if (mouseX >= boxX && mouseX <= boxX + eyeBoxSize &&
                     mouseY >= boxY && mouseY <= boxY + eyeBoxSize) {
                     overSelectionBox = true;
-                    break;
+                    break; //terminate loop
                 }
             }
         }
-
+        //cursor at web tool, cursor not at web normal
         let overWebcam = mouseX >= videoX && mouseX <= videoX + videoWidth &&
             mouseY >= videoY && mouseY <= videoY + videoHeight;
 
@@ -407,16 +410,16 @@ function drawNoseSelectionBoxes() {
         let boxY = startY + i * (noseBoxSize + noseBoxPadding);
 
         if (noseImage == i) {
-            fill(200, 200, 255);
-            stroke(0, 0, 255);
+            fill(255, 248, 249);
+            stroke(244, 194, 194);
             strokeWeight(3);
         } else {
             fill(255);
-            stroke(0);
+            stroke(244, 194, 194);
             strokeWeight(1);
         }
         rect(boxX, boxY, noseBoxSize, noseBoxSize);
-
+        // original eyes
         if (i == 0) {
             fill(0);
             textAlign(CENTER, CENTER);
@@ -425,10 +428,10 @@ function drawNoseSelectionBoxes() {
             text("original", boxX + noseBoxSize / 2, boxY + noseBoxSize / 2);
             textAlign(LEFT, BASELINE);
         } else {
-            imageMode(CORNER);
+            imageMode(CORNER); // preview tool
             let img = noseImages[i];
             let imgAspect = img.width / img.height;
-            let displayWidth, displayHeight;
+            let displayWidth, displayHeight; //keep the porportion of the img
 
             if (imgAspect > 1) {
                 displayWidth = noseBoxSize * 0.9;
@@ -455,23 +458,24 @@ function drawEyeSelectionBoxes() {
         let boxY = startY + i * (eyeBoxSize + eyeBoxPadding);
 
         if (eyeImage == i) {
-            fill(200, 200, 255);
-            stroke(0, 0, 255);
+            fill(255, 248, 249);
+            stroke(244, 194, 194);
             strokeWeight(3);
         } else {
             fill(255);
-            stroke(0);
+            stroke(244, 194, 194);
             strokeWeight(1);
         }
         rect(boxX, boxY, eyeBoxSize, eyeBoxSize);
 
         if (i == 0) {
-            fill(0);
             textAlign(CENTER, CENTER);
             textSize(10);
             textFont('Indie Flower');
+            fill(0);
             text("original", boxX + eyeBoxSize / 2, boxY + eyeBoxSize / 2);
             textAlign(LEFT, BASELINE);
+            // from https://p5js.org/reference/p5/text/ and more google source
         } else {
             imageMode(CORNER);
             let img = eyeImages[i];
@@ -507,6 +511,7 @@ function mousePressed() {
             document.getElementById("title").classList.remove("hidden-text");
             document.getElementById("tool-info").classList.remove("hidden-text");
             bgm.loop();
+            //javascript
         }
     } else {
         if (mouseX >= freezeX && mouseX <= freezeX + freezeSize &&
@@ -525,19 +530,21 @@ function mousePressed() {
 
         if (mouseX >= cameraX && mouseX <= cameraX + cameraSize &&
             mouseY >= cameraY && mouseY <= cameraY + cameraSize) {
-            showUI = !showUI;
+            cameraAction = !cameraAction;
             cameraSound.play();
             return;
         }
 
         if (mouseX >= resetButtonX && mouseX <= resetButtonX + resetButtonSize &&
             mouseY >= resetButtonY && mouseY <= resetButtonY + resetButtonSize) {
-            showWebcam = false;
-            gif = -1;
+            showWebcam = false; //go back to the rabbit
+            gif = -1; //no tool selected
+            //default
             eyeSize = 1;
             noseSize = 1;
             lipsScale = 1;
             lipsStroke = 4;
+            //original
             eyeImage = 0;
             noseImage = 0;
             eyebrowSelected = false;
@@ -545,14 +552,15 @@ function mousePressed() {
             paused = false;
             sizeIncreased = false;
             sizeDecreased = false;
-            showUI = true;
+            cameraAction = true;
             bgm.stop();
             document.getElementById("title").classList.add("hidden-text");
             document.getElementById("tool-info").classList.add("hidden-text");
             select.play();
             return;
+            //javascript
         }
-
+        // use plus and minus to control
         if (gif == 0 || gif == 1) {
             if (mouseX >= plusX && mouseX <= plusX + buttonSize &&
                 mouseY >= plusY && mouseY <= plusY + buttonSize) {
@@ -580,7 +588,7 @@ function mousePressed() {
                 return;
             }
         }
-
+        // select the eye tool
         if (gif == 1) {
             let startX = 10;
             let startY = videoY + 10;
@@ -614,7 +622,7 @@ function mousePressed() {
                 }
             }
         }
-
+        // eyebrow
         if (gif == 2) {
             let dBrown = dist(mouseX, mouseY, brownCircleX, brownCircleY);
             if (dBrown < circleSize / 2) {
@@ -632,7 +640,7 @@ function mousePressed() {
                 return;
             }
         }
-
+        //lips
         if (gif == 3 && faces.length > 0) {
             let d = dist(mouseX, mouseY, lipsCenterX, lipsCenterY);
             if (d < 50) {
@@ -646,6 +654,7 @@ function mousePressed() {
         }
     }
 }
+// different key different tool
 function keyPressed() {
     if (key == '1') {
         gif = 0;
@@ -687,3 +696,5 @@ class Rabbit {
         return d < this.size / 2;
     }
 }
+
+// chatGPT debug
