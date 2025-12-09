@@ -562,33 +562,54 @@ function mousePressed() {
         }
         // use plus and minus to control
         if (gif == 0 || gif == 1) {
+            // plus
             if (mouseX >= plusX && mouseX <= plusX + buttonSize &&
                 mouseY >= plusY && mouseY <= plusY + buttonSize) {
-                if (gif == 0) {
-                    noseSize = noseSize + 0.2;
-                } else if (gif == 1) {
-                    eyeSize++;
+                if (sizeDecreased == false) {
+                    if (gif == 0) {
+                        noseSize = noseSize + 0.2;
+                    } else if (gif == 1) {
+                        eyeSize++;
+                    }
+                    sizeIncreased = true;
+                    sizeSound.play();
                 }
-                sizeSound.play();
                 return;
             }
 
             if (mouseX >= minusX && mouseX <= minusX + buttonSize &&
                 mouseY >= minusY && mouseY <= minusY + buttonSize) {
-                if (gif == 0) {
-                    if (noseSize > 0.2) {
-                        noseSize = noseSize - 0.2;
+                if (sizeIncreased == false) {
+                    if (gif == 0) {
+                        // minimum 0.2
+                        if (noseSize > 0.2) {
+                            noseSize = noseSize - 0.2; // shrink
+                            if (noseSize <= 0.2) {
+                                sizeDecreased = true; // reached min then tint minus
+                            }
+                        } else {
+                            // already at min then just tint, no shrinking
+                            sizeDecreased = true;
+                        }
+                    } else if (gif == 1) {
+                        // minimum 0.5
+                        if (eyeSize > 0.5) {
+                            eyeSize--; // shrink
+                            if (eyeSize <= 0.5) {
+                                sizeDecreased = true; // reached min then tint minus
+                            }
+                        } else {
+                            // already at min then just tint, no shrinking
+                            sizeDecreased = true;
+                        }
                     }
-                } else if (gif == 1) {
-                    if (eyeSize > 0.5) {
-                        eyeSize--;
-                    }
+                    sizeSound.play();
                 }
-                sizeSound.play();
                 return;
             }
+
         }
-        // select the eye tool
+        //eye
         if (gif == 1) {
             let startX = 10;
             let startY = videoY + 10;
