@@ -7,6 +7,7 @@ let gif = -1;
 let gameStart;
 let clickSound;
 let sizeSound;
+let warning;
 let select;
 let bgm;
 let reset;
@@ -97,6 +98,8 @@ let toolButtonSize = 50;
 
 let capture = false;
 
+let warningShown = false;
+let warningOpen = false;
 
 
 function preload() {
@@ -111,6 +114,7 @@ function preload() {
     freeze = loadImage("assets/freeze.gif");
     gameStart = loadSound("assets/gamestart.mp3");
     clickSound = loadSound("assets/click.mp3");
+    warning = loadSound("assets/warning.mp3")
     select = loadSound("assets/select.mp3");
     camera = loadImage("assets/camera.gif");
     cameraSound = loadSound("assets/camera.mp3")
@@ -572,12 +576,18 @@ function mousePressed() {
     if (showWebcam == false) {
         if (rabbit.isClicked(mouseX, mouseY)) {
             showWebcam = true;
-            document.getElementById("title").classList.remove("hidden-text");
-            document.getElementById("tool-info").classList.remove("hidden-text");
+            document.getElementById("title").classList.remove("text");
+            document.getElementById("tool-info").classList.remove("text");
             bgm.loop();
             //javascript
         }
     } else {
+        if (!warningShown && !warningOpen) {
+            warningShown = true;
+            openWarning();
+            return;
+        }
+
         if (mouseX >= freezeX && mouseX <= freezeX + freezeSize &&
             mouseY >= freezeY && mouseY <= freezeY + freezeSize) {
             if (firstEnter == true) {
@@ -628,8 +638,8 @@ function mousePressed() {
             sizeDecreased = false;
             takePicture = true;
             bgm.stop();
-            document.getElementById("title").classList.add("hidden-text");
-            document.getElementById("tool-info").classList.add("hidden-text");
+            document.getElementById("title").classList.add("text");
+            document.getElementById("tool-info").classList.add("text");
             select.play();
             return;
             //javascript
@@ -805,6 +815,30 @@ function keyPressed() {
         lipsVisible = true;
         clickSound.play();
     }
+}
+
+function openWarning() {
+    let warningg = document.getElementById("warning");
+    if (warningg) {
+        warningg.classList.remove("hidden");
+        warningOpen = true;
+        warning.play();
+    }
+    // javascript
+}
+
+function closeWarning() {
+    let warningg = document.getElementById("warning");
+    if (warningg) {
+        warningg.classList.add("hidden");
+        warningOpen = false;
+    }
+    // javascript
+}
+
+// when the user clicks yes
+function confirmWarning() {
+    closeWarning();
 }
 
 class Rabbit {

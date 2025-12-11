@@ -18,7 +18,7 @@ canvas {
     position: relative;
 }
 
-.hidden-text {
+.text {
     display: none;
 }
 
@@ -80,4 +80,81 @@ h1 {
 .tool-desc {
     color: #d50384;
     font-size: 17px;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    /* https://www.w3schools.com/cssref/css_pr_inset.php */
+    background: rgba(255, 192, 203, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.hidden {
+    display: none;
+}
+
+/* popup */
+.box {
+    background: #fffdfc;
+    border-radius: 16px;
+    padding: 24px 28px;
+    max-width: 360px;
+    width: 80%;
+    box-shadow: 0 12px 30px rgba(255, 192, 203, 0.89);
+    border: 2px solid #f4c2c2;
+    text-align: center;
+    font-family: "Indie Flower", cursive;
+}
+
+.title {
+    margin: 0 0 12px;
+    font-size: 24px;
+    color: #ff5c8a;
+}
+
+.textt {
+    margin: 0 0 20px;
+    font-size: 16px;
+    color: #ffa9cd;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn {
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 8px 18px;
+    border: none;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.yes:hover {
+    background: #ff3c72;
+}
+
+
+.yes2:hover {
+    background: #ff3c72;
+}
+
+.yes,
+.yes2 {
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 8px 18px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+    background: #ff5c8a;
+    color: white;
 }

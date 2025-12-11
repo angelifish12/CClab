@@ -20,15 +20,29 @@
 <body>
 
     <div class="main-wrapper">
-        <h1 id="title" class="hidden-text">Dear Dream Self</h1>
+        <h1 id="title" class="text">Dear Dream Self</h1>
 
         <!-- the following div will contain the p5 canvas. -->
         <div id="p5-canvas-container">
             <!-- p5 canvas will be appended here. -->
         </div>
 
+        <div id="warning" class="window hidden">
+            <div class="box">
+                <h2 class="title">WARNING!!</h2>
+                <p class="textt">
+                    Any changes you make to your face cannot be undone.<br>
+                    Do you still want to proceed?
+                </p>
+                <div class="buttons">
+                    <button class="yes" onclick="confirmWarning()">Yes</button>
+                    <button class="yes2" onclick="confirmWarning()">Yes</button>
+                </div>
+            </div>
+        </div>
+
         <!-- tool descriptions -->
-        <div id="tool-info" class="hidden-text">
+        <div id="tool-info" class="text">
             <div class="tool-item">
                 <span class="tool-key">[key 1]</span>
                 <span class="tool-name">👃🏻</span>
