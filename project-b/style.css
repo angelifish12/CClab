@@ -28,7 +28,7 @@ h1 {
     font-size: 78px;
     text-shadow: 2px 2px 4px rgba(106, 15, 88, 0.3);
     /* https://www.w3schools.com/cssref/css3_pr_text-shadow.php */
-    margin-bottom: 30px;
+    margin-bottom: 0px;
     /* https: //www.w3schools.com/cssref/pr_margin-bottom.php */
 }
 

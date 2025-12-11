@@ -97,6 +97,8 @@ let toolButtonSize = 50;
 
 let capture = false;
 
+
+
 function preload() {
     faceMesh = ml5.faceMesh(options);
     gifs[0] = loadImage("assets/injection.gif");
