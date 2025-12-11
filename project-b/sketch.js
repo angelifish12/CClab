@@ -71,17 +71,17 @@ let buttonSize = 80;
 
 let freezeX = 220;
 let freezeY = 490;
-let freezeSize = 80;
+let freezeSize = 100;
 
 let lipsVisible = false;
 
 let cameraX = 320;
 let cameraY = 490;
-let cameraSize = 80;
+let cameraSize = 100;
 
 let resetButtonX = 420;
 let resetButtonY = 490;
-let resetButtonSize = 80;
+let resetButtonSize = 100;
 
 let takePicture = true;
 
