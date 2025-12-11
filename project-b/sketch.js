@@ -28,10 +28,10 @@ let videoY = 0;
 let videoWidth = 640;
 let videoHeight = 480;
 
-let gifX = 640;
-let gifY = 0;
-let gifWidth = 400;
-let gifHeight = 480;
+let gifX = 680;
+let gifY = 70;
+let gifWidth = 200;
+let gifHeight = 240;
 
 let rabbit;
 let rabbitImg;
@@ -63,10 +63,10 @@ let plus;
 let minus;
 let sizeIncreased = false;
 let sizeDecreased = false;
-let plusX = 640;
-let plusY = 400;
+let plusX = 710;
+let plusY = 360;
 let minusX = 760;
-let minusY = 400;
+let minusY = 360;
 let buttonSize = 80;
 
 let freezeX = 220;
@@ -83,7 +83,19 @@ let resetButtonX = 420;
 let resetButtonY = 490;
 let resetButtonSize = 80;
 
-let cameraAction = true;
+let takePicture = true;
+
+let tool1X = 650;
+let tool1Y = 30;
+let tool2X = 730;
+let tool2Y = 30;
+let tool3X = 810;
+let tool3Y = 30;
+let tool4X = 890;
+let tool4Y = 30;
+let toolButtonSize = 50;
+
+let capture = false;
 
 function preload() {
     faceMesh = ml5.faceMesh(options);
@@ -143,6 +155,7 @@ function draw() {
             image(pausedVideo, videoX, videoY, videoWidth, videoHeight);
         }
 
+
         if (faces.length > 0 && gif >= 0) {
             let face = faces[0];
             let faceHeight = face.box.height;
@@ -188,7 +201,9 @@ function draw() {
                     );
                 }
                 imageMode(CORNER);
+
             }
+
 
             // examples from https://editor.p5js.org/xinxin/sketches/nC-CYIRGt
 
@@ -263,12 +278,12 @@ function draw() {
             }
         }
 
-        if (cameraAction) {
+        if (takePicture) {
             if (gif == 1) {
-                drawEyeSelectionBoxes();
+                eyeSelectionBoxes();
             }
             if (gif == 0) {
-                drawNoseSelectionBoxes();
+                noseSelectionBoxes();
             }
             if (gif == 2) {
                 fill("#964B00");
@@ -330,6 +345,44 @@ function draw() {
                         noTint();
                     }
                 }
+            }
+            // tool selection buttons
+            if (takePicture) {
+                // tool 1
+                if (gif == 0) {
+                    tint(255, 0, 128); // highlight if selected
+                }
+                image(gifs[0], tool1X, tool1Y, toolButtonSize, toolButtonSize);
+                noTint();
+
+                // tool 2
+                if (gif == 1) {
+                    tint(255, 200, 200);
+                }
+                image(gifs[1], tool2X, tool2Y, toolButtonSize, toolButtonSize);
+                noTint();
+
+                // tool 3
+                if (gif == 2) {
+                    tint(255, 200, 200);
+                }
+                image(gifs[2], tool3X, tool3Y, toolButtonSize, toolButtonSize);
+                noTint();
+
+                // tool 4
+                if (gif == 3) {
+                    tint(255, 200, 200);
+                }
+                image(gifs[3], tool4X, tool4Y, toolButtonSize, toolButtonSize);
+                noTint();
+
+                noFill();
+                stroke(244, 194, 194);
+                strokeWeight(3);
+                rect(tool1X, tool1Y, toolButtonSize, toolButtonSize);
+                rect(tool2X, tool2Y, toolButtonSize, toolButtonSize);
+                rect(tool3X, tool3Y, toolButtonSize, toolButtonSize);
+                rect(tool4X, tool4Y, toolButtonSize, toolButtonSize);
             }
         }
 
@@ -398,10 +451,19 @@ function draw() {
         } else {
             cursor(ARROW);
         }
+        if (capture) {
+            let webcamSection = get(videoX, videoY, videoWidth, videoHeight);
+            // https://p5js.org/reference/p5/get/
+            save(webcamSection, 'Dear Dream Self', 'png');
+            //https://p5js.org/reference/p5.Image/save/
+
+            takePicture = true;
+            capture = false;
+        }
     }
 }
 
-function drawNoseSelectionBoxes() {
+function noseSelectionBoxes() {
     let startX = 10;
     let startY = videoY + 10;
 
@@ -449,7 +511,7 @@ function drawNoseSelectionBoxes() {
     }
 }
 
-function drawEyeSelectionBoxes() {
+function eyeSelectionBoxes() {
     let startX = 10;
     let startY = videoY + 10;
 
@@ -473,7 +535,7 @@ function drawEyeSelectionBoxes() {
             textSize(10);
             textFont('Indie Flower');
             fill(0);
-            text("original", boxX + eyeBoxSize / 2, boxY + eyeBoxSize / 2);
+            text('original', boxX + eyeBoxSize / 2, boxY + eyeBoxSize / 2);
             textAlign(LEFT, BASELINE);
             // from https://p5js.org/reference/p5/text/ and more google source
         } else {
@@ -530,10 +592,20 @@ function mousePressed() {
 
         if (mouseX >= cameraX && mouseX <= cameraX + cameraSize &&
             mouseY >= cameraY && mouseY <= cameraY + cameraSize) {
-            cameraAction = !cameraAction;
-            cameraSound.play();
+            if (takePicture) {
+                takePicture = false;
+                cameraSound.play();
+
+                // capture next frame
+                capture = true;
+            } else {
+                takePicture = true;
+                cameraSound.play();
+            }
             return;
         }
+
+
 
         if (mouseX >= resetButtonX && mouseX <= resetButtonX + resetButtonSize &&
             mouseY >= resetButtonY && mouseY <= resetButtonY + resetButtonSize) {
@@ -552,13 +624,46 @@ function mousePressed() {
             paused = false;
             sizeIncreased = false;
             sizeDecreased = false;
-            cameraAction = true;
+            takePicture = true;
             bgm.stop();
             document.getElementById("title").classList.add("hidden-text");
             document.getElementById("tool-info").classList.add("hidden-text");
             select.play();
             return;
             //javascript
+        }
+        // tool selection buttons
+        if (mouseX >= tool1X && mouseX <= tool1X + toolButtonSize &&
+            mouseY >= tool1Y && mouseY <= tool1Y + toolButtonSize) {
+            gif = 0;
+            sizeIncreased = false;
+            sizeDecreased = false;
+            clickSound.play();
+            return;
+        }
+
+        if (mouseX >= tool2X && mouseX <= tool2X + toolButtonSize &&
+            mouseY >= tool2Y && mouseY <= tool2Y + toolButtonSize) {
+            gif = 1;
+            sizeIncreased = false;
+            sizeDecreased = false;
+            clickSound.play();
+            return;
+        }
+
+        if (mouseX >= tool3X && mouseX <= tool3X + toolButtonSize &&
+            mouseY >= tool3Y && mouseY <= tool3Y + toolButtonSize) {
+            gif = 2;
+            clickSound.play();
+            return;
+        }
+
+        if (mouseX >= tool4X && mouseX <= tool4X + toolButtonSize &&
+            mouseY >= tool4Y && mouseY <= tool4Y + toolButtonSize) {
+            gif = 3;
+            lipsVisible = true;
+            clickSound.play();
+            return;
         }
         // use plus and minus to control
         if (gif == 0 || gif == 1) {

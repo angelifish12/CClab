@@ -37,13 +37,12 @@ h1 {
     color: rgb(189, 5, 158);
     font-size: 18px;
     background-color: rgba(233, 51, 200, 0.2);
-    padding: 15px;
+    padding: 10px;
     border-radius: 8px;
     margin: 20px auto;
 }
 
 #tool-info {
-    margin-top: 30px;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 12px;
