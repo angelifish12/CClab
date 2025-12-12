@@ -169,6 +169,11 @@ function draw() {
         if (faces.length > 0 && gif >= 0) {
             let face = faces[0];
             let faceHeight = face.box.height;
+
+            push();
+            translate(videoX + videoWidth, 0);
+            scale(-1, 1);
+
             //eye center on users eye
             if (eyeImage > 0) {
                 imageMode(CENTER);
@@ -286,6 +291,7 @@ function draw() {
                 rotate(radians(angle));
                 pop();
             }
+            pop();
         }
 
         if (takePicture) {
