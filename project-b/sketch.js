@@ -16,7 +16,7 @@ let cameraSound;
 let freeze;
 let firstEnter = true;
 
-let eyeSize = 1;
+let eyeSize = 1.5;
 let mouthHeight = 60;
 let noseSize = 1;
 let lipsScale = 1;
@@ -633,7 +633,6 @@ function mousePressed() {
             mouseY >= resetButtonY && mouseY <= resetButtonY + resetButtonSize) {
             showWebcam = false; //go back to the rabbit
             gif = -1; //no tool selected
-            //default
             eyeSize = 1;
             noseSize = 1;
             lipsScale = 1;
@@ -721,12 +720,11 @@ function mousePressed() {
                     } else if (gif == 1) {
                         // minimum 0.5
                         if (eyeSize > 0.5) {
-                            eyeSize--; // shrink
+                            eyeSize = eyeSize - 0.6;
                             if (eyeSize <= 0.5) {
-                                sizeDecreased = true; // reached min then tint minus
+                                sizeDecreased = true;
                             }
                         } else {
-                            // already at min then just tint, no shrinking
                             sizeDecreased = true;
                         }
                     }
