@@ -150,16 +150,20 @@ function setup() {
 
 function draw() {
     background(255);
-
     if (showWebcam == false) {
         rabbit.display();
         cursor(ARROW);
     } else {
+        push();
+        translate(videoX + videoWidth, 0);
+        // flip horizontal
+        scale(-1, 1);
         if (paused == false) {
             image(video, videoX, videoY, videoWidth, videoHeight);
         } else {
             image(pausedVideo, videoX, videoY, videoWidth, videoHeight);
         }
+        pop();
 
 
         if (faces.length > 0 && gif >= 0) {
