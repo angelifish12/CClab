@@ -788,8 +788,9 @@ function mousePressed() {
         }
         //lips
         if (gif == 3 && faces.length > 0) {
-            let d = dist(mouseX, mouseY, lipsCenterX, lipsCenterY);
-            if (d < 50) {
+            let flippedMouseX = videoWidth - mouseX;
+            let d = dist(flippedMouseX, mouseY, lipsCenterX, lipsCenterY);
+            if (d < 70) {
                 lipsScale += 0.05;
                 lipsStroke += 2;
                 if (lipsScale > 2) lipsScale = 2;
